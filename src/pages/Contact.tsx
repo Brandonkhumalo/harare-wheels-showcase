@@ -95,7 +95,7 @@ const Contact = () => {
               {/* Map placeholder */}
               <div className="rounded-xl overflow-hidden h-64 bg-charcoal-light border border-border">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3798.7425046556897!2d31.0425!3d-17.8292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDQ5JzQ1LjEiUyAzMcKwMDInMzMuMCJF!5e0!3m2!1sen!2szw!4v1635959200000!5m2!1sen!2szw"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3798.5!2d31.0534!3d-17.8352!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1931a4f7b23c1c8f%3A0x1234567890abcdef!2s12%20Brighton%20Rd%2C%20Harare%2C%20Zimbabwe!5e0!3m2!1sen!2szw!4v1700000000000!5m2!1sen!2szw"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
