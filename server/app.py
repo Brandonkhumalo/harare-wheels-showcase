@@ -378,15 +378,24 @@ This email was sent from the Exceed Auto website contact form.
         
         msg.attach(MIMEText(body, 'plain'))
         
-        with smtplib.SMTP_SSL(smtp_domain, smtp_port) as server:
-            server.login(smtp_username, smtp_password)
-            server.sendmail(smtp_username, destination, msg.as_string())
+        print(f"Attempting to connect to SMTP: {smtp_domain}:{smtp_port}")
+        server = smtplib.SMTP_SSL(smtp_domain, smtp_port, timeout=10)
+        server.login(smtp_username, smtp_password)
+        server.sendmail(smtp_username, destination, msg.as_string())
+        server.quit()
+        print("Email sent successfully")
         
         return jsonify({'message': 'Email sent successfully'})
     
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"SMTP Auth Error: {str(e)}")
+        return jsonify({'error': 'Email authentication failed'}), 500
+    except smtplib.SMTPException as e:
+        print(f"SMTP Error: {str(e)}")
+        return jsonify({'error': 'Email server error'}), 500
     except Exception as e:
         print(f"Email error: {str(e)}")
-        return jsonify({'error': 'Failed to send email'}), 500
+        return jsonify({'error': 'Failed to send email. Please try again or contact us directly.'}), 500
 
 def init_db():
     with app.app_context():
