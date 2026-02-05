@@ -393,11 +393,11 @@ def init_db():
         db.create_all()
         
         if not Admin.query.first():
-            admin = Admin(username='admin')
-            admin.set_password('admin123')
+            admin = Admin(username='admin@autoexceed')
+            admin.set_password('autoexceed@admin')
             db.session.add(admin)
             db.session.commit()
-            print("Default admin created: admin / admin123")
+            print("Default admin created: admin@autoexceed / autoexceed@admin")
 
 if __name__ == '__main__':
     init_db()

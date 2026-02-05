@@ -75,8 +75,8 @@ Exceed Auto is a car dealership website for Zimbabwe's premier destination for q
 - `GET /api/uploads/:filename` - Serve uploaded images
 
 ## Default Admin Credentials
-- Username: `admin`
-- Password: `admin123`
+- Username: `admin@autoexceed`
+- Password: `autoexceed@admin`
 
 ## Running the Application
 The application runs with `bash start.sh` which starts:
