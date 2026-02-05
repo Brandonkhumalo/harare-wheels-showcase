@@ -32,7 +32,6 @@ const About = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 bg-charcoal-light">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-primary text-sm font-medium uppercase tracking-wider mb-3">
@@ -42,14 +41,13 @@ const About = () => {
             Driving Excellence in Zimbabwe
           </h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Since 2009, Velocity Motors has been Harare's trusted destination for 
+            Since 2009, Exceed Auto has been Harare's trusted destination for 
             quality pre-owned vehicles. Our commitment to excellence and customer 
             satisfaction sets us apart.
           </p>
         </div>
       </section>
 
-      {/* Stats */}
       <section className="py-16 px-4 bg-background">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -64,7 +62,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Story Section */}
       <section className="section-padding bg-charcoal-light">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -77,7 +74,7 @@ const About = () => {
               </h2>
               <div className="space-y-4 text-muted-foreground">
                 <p>
-                  Velocity Motors was founded with a simple vision: to provide Zimbabweans 
+                  Exceed Auto was founded with a simple vision: to provide Zimbabweans 
                   with access to high-quality vehicles at competitive prices, backed by 
                   unparalleled customer service.
                 </p>
@@ -109,7 +106,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Values */}
       <section className="section-padding bg-background">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
@@ -149,7 +145,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Team */}
       <section className="section-padding bg-charcoal-light">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">

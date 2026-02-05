@@ -1,28 +1,46 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { cars } from "@/data/cars";
+import { api, Car } from "@/lib/api";
 import {
   ArrowLeft,
   Calendar,
   Gauge,
   Fuel,
   Settings2,
-  Users,
   Palette,
   Phone,
   MessageCircle,
-  Check,
   ChevronRight,
+  Loader2,
+  Car as CarIcon,
 } from "lucide-react";
-import CarCard from "@/components/CarCard";
 
 const CarDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const car = cars.find((c) => c.id === id);
 
-  if (!car) {
+  const { data: car, isLoading, error } = useQuery<Car>({
+    queryKey: ["/api/cars", id],
+    queryFn: () => api.getCar(parseInt(id || "0")),
+    enabled: !!id,
+  });
+
+  const { data: allCars = [] } = useQuery<Car[]>({
+    queryKey: ["/api/cars"],
+    queryFn: () => api.getCars(),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error || !car) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -32,7 +50,7 @@ const CarDetail = () => {
           <p className="text-muted-foreground mb-8">
             The vehicle you're looking for doesn't exist or has been sold.
           </p>
-          <Link to="/cars" className="btn-gold">
+          <Link to="/cars" className="btn-gold" data-testid="link-browse-cars">
             Browse Available Cars
           </Link>
         </div>
@@ -40,25 +58,24 @@ const CarDetail = () => {
     );
   }
 
-  // Get similar cars (same design, different car)
-  const similarCars = cars
-    .filter((c) => c.design === car.design && c.id !== car.id)
+  const similarCars = allCars
+    .filter((c) => c.body_type === car.body_type && c.id !== car.id)
     .slice(0, 4);
+
+  const primaryImage = car.images.find((img) => img.is_primary) || car.images[0];
 
   const specs = [
     { icon: Calendar, label: "Year", value: car.year.toString() },
-    { icon: Gauge, label: "Mileage", value: `${car.mileage.toLocaleString()} km` },
-    { icon: Fuel, label: "Fuel Type", value: car.fuelType },
-    { icon: Settings2, label: "Transmission", value: car.transmission },
-    { icon: Users, label: "Seats", value: car.seats.toString() },
-    { icon: Palette, label: "Color", value: car.color },
-  ];
+    car.mileage ? { icon: Gauge, label: "Mileage", value: `${car.mileage.toLocaleString()} km` } : null,
+    car.fuel_type ? { icon: Fuel, label: "Fuel Type", value: car.fuel_type } : null,
+    car.transmission ? { icon: Settings2, label: "Transmission", value: car.transmission } : null,
+    car.color ? { icon: Palette, label: "Color", value: car.color } : null,
+  ].filter(Boolean);
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      {/* Breadcrumb */}
       <div className="pt-24 pb-4 px-4 bg-charcoal-light">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-2 text-sm">
@@ -70,17 +87,17 @@ const CarDetail = () => {
               Cars
             </Link>
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
-            <span className="text-foreground">{car.name}</span>
+            <span className="text-foreground">{car.brand_name} {car.model}</span>
           </div>
         </div>
       </div>
 
-      {/* Back Button */}
       <div className="bg-charcoal-light pb-4 px-4">
         <div className="max-w-7xl mx-auto">
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            data-testid="button-back"
           >
             <ArrowLeft className="w-5 h-5" />
             Back to Results
@@ -88,39 +105,53 @@ const CarDetail = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <section className="section-padding bg-background">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Image Gallery */}
             <div className="space-y-4">
               <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-charcoal-light">
-                <img
-                  src={car.images[0]}
-                  alt={car.name}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = `https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&h=600&fit=crop`;
-                  }}
-                />
-                {car.isNewImport && (
+                {primaryImage ? (
+                  <img
+                    src={primaryImage.url}
+                    alt={`${car.brand_name} ${car.model}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <CarIcon className="w-24 h-24 text-muted-foreground" />
+                  </div>
+                )}
+                {car.featured && (
                   <span className="absolute top-4 right-4 bg-primary text-primary-foreground text-sm font-semibold px-4 py-2 rounded-full">
-                    New Import
+                    Featured
                   </span>
                 )}
               </div>
+
+              {car.images.length > 1 && (
+                <div className="grid grid-cols-4 gap-2">
+                  {car.images.map((image) => (
+                    <div key={image.id} className="aspect-[4/3] rounded-lg overflow-hidden bg-charcoal-light">
+                      <img
+                        src={image.url}
+                        alt={`${car.brand_name} ${car.model}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Details */}
             <div>
               <div className="mb-6">
                 <p className="text-primary text-sm font-medium uppercase tracking-wider mb-2">
-                  {car.brand}
+                  {car.brand_name}
                 </p>
                 <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-2">
-                  {car.name}
+                  {car.model}
                 </h1>
-                <p className="text-lg text-muted-foreground">{car.model}</p>
+                <p className="text-lg text-muted-foreground">{car.year}</p>
               </div>
 
               <div className="mb-8">
@@ -129,9 +160,8 @@ const CarDetail = () => {
                 </p>
               </div>
 
-              {/* Specs Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                {specs.map((spec) => (
+                {specs.map((spec) => spec && (
                   <div
                     key={spec.label}
                     className="p-4 rounded-lg bg-card border border-border"
@@ -143,23 +173,24 @@ const CarDetail = () => {
                 ))}
               </div>
 
-              {/* Engine */}
-              <div className="mb-8 p-6 rounded-xl bg-card border border-border">
-                <h3 className="font-semibold text-foreground mb-2">Engine</h3>
-                <p className="text-muted-foreground">{car.engine}</p>
-              </div>
+              {car.engine && (
+                <div className="mb-8 p-6 rounded-xl bg-card border border-border">
+                  <h3 className="font-semibold text-foreground mb-2">Engine</h3>
+                  <p className="text-muted-foreground">{car.engine}</p>
+                </div>
+              )}
 
-              {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <Link to="/contact" className="btn-gold flex-1 flex items-center justify-center gap-2">
+                <Link to="/contact" className="btn-gold flex-1 flex items-center justify-center gap-2" data-testid="button-contact">
                   <Phone className="w-5 h-5" />
                   Contact Us
                 </Link>
                 <a
-                  href={`https://wa.me/263771234567?text=Hi, I'm interested in the ${car.year} ${car.name} (${car.model}) listed at $${car.price.toLocaleString()}`}
+                  href={`https://wa.me/263771234567?text=Hi, I'm interested in the ${car.year} ${car.brand_name} ${car.model} listed at $${car.price.toLocaleString()}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-outline-gold flex-1 flex items-center justify-center gap-2"
+                  data-testid="button-whatsapp"
                 >
                   <MessageCircle className="w-5 h-5" />
                   WhatsApp
@@ -168,9 +199,8 @@ const CarDetail = () => {
             </div>
           </div>
 
-          {/* Description & Features */}
-          <div className="grid lg:grid-cols-2 gap-12 mt-12 pt-12 border-t border-border">
-            <div>
+          {car.description && (
+            <div className="mt-12 pt-12 border-t border-border">
               <h2 className="text-2xl font-serif font-bold text-foreground mb-4">
                 Description
               </h2>
@@ -178,29 +208,10 @@ const CarDetail = () => {
                 {car.description}
               </p>
             </div>
-            <div>
-              <h2 className="text-2xl font-serif font-bold text-foreground mb-4">
-                Features
-              </h2>
-              <div className="grid grid-cols-2 gap-3">
-                {car.features.map((feature) => (
-                  <div
-                    key={feature}
-                    className="flex items-center gap-3 text-muted-foreground"
-                  >
-                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
-                      <Check className="w-4 h-4 text-primary" />
-                    </div>
-                    {feature}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* Similar Cars */}
       {similarCars.length > 0 && (
         <section className="section-padding bg-charcoal-light">
           <div className="max-w-7xl mx-auto">
@@ -212,12 +223,38 @@ const CarDetail = () => {
                 to="/cars"
                 className="text-primary font-medium hover:underline"
               >
-                View All →
+                View All
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {similarCars.map((car) => (
-                <CarCard key={car.id} car={car} />
+              {similarCars.map((similarCar) => (
+                <Link
+                  key={similarCar.id}
+                  to={`/cars/${similarCar.id}`}
+                  className="block bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors"
+                  data-testid={`link-similar-car-${similarCar.id}`}
+                >
+                  <div className="aspect-[4/3] bg-muted">
+                    {similarCar.images[0] ? (
+                      <img
+                        src={similarCar.images[0].url}
+                        alt={`${similarCar.brand_name} ${similarCar.model}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <CarIcon className="w-12 h-12 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <p className="text-sm text-primary">{similarCar.brand_name}</p>
+                    <h3 className="font-semibold text-foreground">{similarCar.model}</h3>
+                    <p className="text-lg font-bold text-gradient-gold mt-2">
+                      ${similarCar.price.toLocaleString()}
+                    </p>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>

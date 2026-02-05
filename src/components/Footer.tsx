@@ -1,28 +1,21 @@
 import { Link } from "react-router-dom";
-import { Car, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Footer = () => {
   return (
     <footer className="bg-charcoal-light border-t border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* Brand */}
           <div>
             <Link to="/" className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center">
-                <Car className="w-7 h-7 text-primary-foreground" />
-              </div>
-              <div>
-                <span className="text-xl font-serif font-bold text-foreground">Velocity</span>
-                <span className="text-xl font-serif font-bold text-primary"> Motors</span>
-              </div>
+              <img src={logo} alt="Exceed Auto" className="h-10 w-auto" />
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed">
               Zimbabwe's premier destination for quality vehicles. Experience luxury, reliability, and exceptional service.
             </p>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h4 className="font-serif text-lg font-semibold mb-6 text-foreground">Quick Links</h4>
             <ul className="space-y-3">
@@ -44,7 +37,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Info */}
           <div>
             <h4 className="font-serif text-lg font-semibold mb-6 text-foreground">Contact Us</h4>
             <ul className="space-y-4">
@@ -60,12 +52,11 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-                <span className="text-muted-foreground text-sm">info@velocitymotors.co.zw</span>
+                <span className="text-muted-foreground text-sm">info@exceedauto.co.zw</span>
               </li>
             </ul>
           </div>
 
-          {/* Social Media */}
           <div>
             <h4 className="font-serif text-lg font-semibold mb-6 text-foreground">Follow Us</h4>
             <div className="flex gap-4">
@@ -78,6 +69,7 @@ const Footer = () => {
                   key={social.label}
                   href="#"
                   className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                  data-testid={`link-social-${social.label.toLowerCase()}`}
                 >
                   <social.icon className="w-5 h-5" />
                 </a>
@@ -90,21 +82,9 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} Velocity Motors. All rights reserved.
-          </p>
-          <p className="text-muted-foreground text-sm">
-            Created and designed by{" "}
-            <a
-              href="https://tishanyq.co.zw"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline font-medium"
-            >
-              Tishanyq Digital
-            </a>
+            {new Date().getFullYear()} Exceed Auto. All rights reserved.
           </p>
         </div>
       </div>
