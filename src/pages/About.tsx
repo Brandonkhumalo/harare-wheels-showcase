@@ -29,7 +29,7 @@ const About = () => {
           </h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Since 2009, Exceed Auto has been Harare's trusted destination for 
-            quality pre-owned vehicles. Our commitment to excellence and customer 
+            quality new and pre-owned vehicles. Our commitment to excellence and customer 
             satisfaction sets us apart.
           </p>
         </div>

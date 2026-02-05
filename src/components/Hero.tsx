@@ -22,7 +22,7 @@ const Hero = () => {
               <span className="block text-gradient-gold">Home Today</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl mb-8 leading-relaxed">
-              Zimbabwe's premier destination for quality pre-owned vehicles. 
+              Zimbabwe's premier destination for quality new and pre-owned vehicles. 
               Experience luxury, reliability, and exceptional service at Harare's 
               most trusted dealership.
             </p>
