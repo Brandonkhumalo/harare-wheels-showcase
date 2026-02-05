@@ -43,16 +43,16 @@ const Footer = () => {
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <span className="text-muted-foreground text-sm">
-                  123 Samora Machel Avenue,<br />Harare, Zimbabwe
+                  12 Brighton Rd,<br />Harare, Zimbabwe
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-primary flex-shrink-0" />
-                <span className="text-muted-foreground text-sm">+263 242 123 456</span>
+                <span className="text-muted-foreground text-sm">+263 77 824 1261</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-                <span className="text-muted-foreground text-sm">info@exceedauto.co.zw</span>
+                <span className="text-muted-foreground text-sm">info@exceed-auto.co.zw</span>
               </li>
             </ul>
           </div>
@@ -76,8 +76,8 @@ const Footer = () => {
               ))}
             </div>
             <p className="mt-6 text-muted-foreground text-sm">
-              Mon - Sat: 8:00 AM - 6:00 PM<br />
-              Sunday: Closed
+              Mon - Fri: 08:00 - 17:00<br />
+              Sat - Sun: 09:00 - 16:00
             </p>
           </div>
         </div>

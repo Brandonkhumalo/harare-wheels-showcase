@@ -62,22 +62,22 @@ const Contact = () => {
                   {
                     icon: MapPin,
                     title: "Visit Us",
-                    content: "123 Samora Machel Avenue, Harare, Zimbabwe",
+                    content: "12 Brighton Rd, Harare, Zimbabwe",
                   },
                   {
                     icon: Phone,
                     title: "Call Us",
-                    content: "+263 242 123 456 / +263 77 123 4567",
+                    content: "+263 77 824 1261",
                   },
                   {
                     icon: Mail,
                     title: "Email Us",
-                    content: "info@velocitymotors.co.zw",
+                    content: "info@exceed-auto.co.zw",
                   },
                   {
                     icon: Clock,
                     title: "Working Hours",
-                    content: "Mon - Sat: 8:00 AM - 6:00 PM",
+                    content: "Mon - Fri: 08:00 - 17:00 | Sat - Sun: 09:00 - 16:00",
                   },
                 ].map((item) => (
                   <div key={item.title} className="flex gap-4">
@@ -102,7 +102,7 @@ const Contact = () => {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Velocity Motors Location"
+                  title="Exceed Auto Location"
                 />
               </div>
             </div>
@@ -156,7 +156,7 @@ const Contact = () => {
                       value={formData.phone}
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                      placeholder="+263 77 123 4567"
+                      placeholder="+263 77 824 1261"
                     />
                   </div>
                   <div>
