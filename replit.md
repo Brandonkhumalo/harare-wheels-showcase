@@ -81,7 +81,20 @@ Exceed Auto is a car dealership website for Zimbabwe's premier destination for q
 ## Running the Application
 The application runs with `bash start.sh` which starts:
 1. Flask backend on port 5001
-2. Vite frontend on port 5000 (proxies /api to backend)
+2. Vite frontend on port 5000 (proxies /api to backend in development)
+
+## Hosting Separately
+
+### Frontend Deployment
+1. Build the frontend: `npm run build`
+2. Deploy the `dist/` folder to any static hosting (Netlify, Vercel, etc.)
+3. Set environment variable: `VITE_API_URL=https://your-backend-url.com/api`
+
+### Backend Deployment
+1. Deploy the `server/` folder to any Python hosting
+2. Set environment variables from `server/.env.example`
+3. Ensure CORS allows your frontend domain
+4. Run with: `gunicorn --bind 0.0.0.0:5000 app:app`
 
 ## Development Notes
 - Vite proxies `/api` requests to Flask backend on port 5001

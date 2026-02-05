@@ -4,6 +4,8 @@ import Footer from "@/components/Footer";
 import { Phone, Mail, MapPin, Clock, Send, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
 const Contact = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +22,7 @@ const Contact = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch(`${API_BASE}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
