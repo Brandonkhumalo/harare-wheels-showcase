@@ -1,0 +1,47 @@
+[2026-02-05 19:53:10 +0000] [1] [INFO] Starting gunicorn 21.2.0
+[2026-02-05 19:53:10 +0000] [1] [INFO] Listening at: http://0.0.0.0:5000 (1)
+[2026-02-05 19:53:10 +0000] [1] [INFO] Using worker: sync
+[2026-02-05 19:53:10 +0000] [23] [INFO] Booting worker with pid: 23
+[2026-02-05 19:53:11 +0000] [23] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/mise/installs/python/3.13.12/lib/python3.13/site-packages/gunicorn/arbiter.py", line 609, in spawn_worker
+    worker.init_process()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "/mise/installs/python/3.13.12/lib/python3.13/site-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+    ~~~~~~~~~~~~~~^^
+  File "/mise/installs/python/3.13.12/lib/python3.13/site-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+                ~~~~~~~~~~~~~^^
+  File "/mise/installs/python/3.13.12/lib/python3.13/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+                    ~~~~~~~~~^^
+  File "/mise/installs/python/3.13.12/lib/python3.13/site-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/mise/installs/python/3.13.12/lib/python3.13/site-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/mise/installs/python/3.13.12/lib/python3.13/site-packages/gunicorn/util.py", line 371, in import_app
+    mod = importlib.import_module(module)
+  File "/mise/installs/python/3.13.12/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1023, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/app/server/app.py", line 40, in <module>
+    db.init_app(app)
+    ~~~~~~~~~~~^^^^^
+  File "/mise/installs/python/3.13.12/lib/python3.13/site-packages/flask_sqlalchemy/extension.py", line 355, in init_app
+    raise RuntimeError(
+        "Either 'SQLALCHEMY_DATABASE_URI' or 'SQLALCHEMY_BINDS' must be set."
+    )
+RuntimeError: Either 'SQLALCHEMY_DATABASE_URI' or 'SQLALCHEMY_BINDS' must be set.
+[2026-02-05 19:53:11 +0000] [23] [INFO] Worker exiting (pid: 23)
+[2026-02-05 19:53:11 +0000] [1] [ERROR] Worker (pid:23) exited with code 3
+[2026-02-05 19:53:11 +0000] [1] [ERROR] Shutting down: Master
+[2026-02-05 19:53:11 +0000] [1] [ERROR] Reason: Worker failed to boot.
