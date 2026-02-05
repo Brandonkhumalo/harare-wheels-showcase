@@ -1,11 +1,28 @@
 import os
 import secrets
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
 from functools import wraps
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from models import db, Admin, Brand, Car, CarImage
+
+def load_env_file():
+    env_path = os.path.join(os.path.dirname(__file__), '.env')
+    if os.path.exists(env_path):
+        with open(env_path, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, value = line.split('=', 1)
+                    key = key.strip()
+                    value = value.strip().strip('"').strip("'")
+                    os.environ[key] = value
+
+load_env_file()
 
 app = Flask(__name__)
 CORS(app)
@@ -315,6 +332,61 @@ def get_filters():
         'fuel_types': [ft[0] for ft in fuel_types],
         'transmissions': [t[0] for t in transmissions]
     })
+
+@app.route('/api/contact', methods=['POST'])
+def send_contact_email():
+    data = request.get_json()
+    
+    name = data.get('name')
+    email = data.get('email')
+    phone = data.get('phone', 'Not provided')
+    subject = data.get('subject')
+    message = data.get('message')
+    
+    if not name or not email or not subject or not message:
+        return jsonify({'error': 'Missing required fields'}), 400
+    
+    smtp_username = os.environ.get('Username')
+    smtp_password = os.environ.get('Password')
+    smtp_domain = os.environ.get('Domain')
+    smtp_port = int(os.environ.get('SMTPPort', 465))
+    destination = os.environ.get('destination')
+    
+    if not all([smtp_username, smtp_password, smtp_domain, destination]):
+        return jsonify({'error': 'Email configuration not set'}), 500
+    
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = smtp_username
+        msg['To'] = destination
+        msg['Subject'] = f"Website Inquiry: {subject}"
+        
+        body = f"""
+New contact form submission from the Exceed Auto website:
+
+Name: {name}
+Email: {email}
+Phone: {phone}
+Subject: {subject}
+
+Message:
+{message}
+
+---
+This email was sent from the Exceed Auto website contact form.
+        """
+        
+        msg.attach(MIMEText(body, 'plain'))
+        
+        with smtplib.SMTP_SSL(smtp_domain, smtp_port) as server:
+            server.login(smtp_username, smtp_password)
+            server.sendmail(smtp_username, destination, msg.as_string())
+        
+        return jsonify({'message': 'Email sent successfully'})
+    
+    except Exception as e:
+        print(f"Email error: {str(e)}")
+        return jsonify({'error': 'Failed to send email'}), 500
 
 def init_db():
     with app.app_context():
