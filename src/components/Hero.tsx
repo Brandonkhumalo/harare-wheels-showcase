@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, Award, Headphones } from "lucide-react";
+import heroDealershipImg from "@/assets/images/hero-dealership.jpeg";
 
 const Hero = () => {
   return (
@@ -55,8 +56,8 @@ const Hero = () => {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent blur-3xl" />
               <img
-                src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&h=600&fit=crop"
-                alt="Luxury Car"
+                src={heroDealershipImg}
+                alt="Exceed Auto Dealership"
                 className="relative z-10 w-full rounded-2xl shadow-2xl"
               />
               <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-xl p-4 shadow-xl z-20">
