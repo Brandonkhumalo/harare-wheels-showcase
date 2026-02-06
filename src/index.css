@@ -135,6 +135,10 @@
     animation: slide 30s linear infinite;
   }
 
+  .animate-slide-gallery {
+    animation: slide 40s linear infinite;
+  }
+
   @keyframes slide {
     0% {
       transform: translateX(0);
