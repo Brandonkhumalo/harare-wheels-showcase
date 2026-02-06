@@ -1,8 +1,6 @@
 import os
 import secrets
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import resend
 from datetime import datetime, timedelta
 from functools import wraps
 from flask import Flask, request, jsonify, send_from_directory
@@ -346,55 +344,45 @@ def send_contact_email():
     if not name or not email or not subject or not message:
         return jsonify({'error': 'Missing required fields'}), 400
     
-    smtp_username = os.environ.get('Username')
-    smtp_password = os.environ.get('Password')
-    smtp_domain = os.environ.get('Domain')
-    smtp_port = int(os.environ.get('SMTPPort', 465))
+    api_key = os.environ.get('ResendEmailApiKey')
     destination = os.environ.get('destination')
     
-    if not all([smtp_username, smtp_password, smtp_domain, destination]):
+    if not api_key or not destination:
         return jsonify({'error': 'Email configuration not set'}), 500
     
     try:
-        msg = MIMEMultipart()
-        msg['From'] = smtp_username
-        msg['To'] = destination
-        msg['Subject'] = f"Website Inquiry: {subject}"
+        resend.api_key = api_key
         
-        body = f"""
-New contact form submission from the Exceed Auto website:
-
-Name: {name}
-Email: {email}
-Phone: {phone}
-Subject: {subject}
-
-Message:
-{message}
-
----
-This email was sent from the Exceed Auto website contact form.
+        html_body = f"""
+        <h2>New Contact Form Submission</h2>
+        <p>You've received a new inquiry from the Exceed Auto website:</p>
+        <table style="border-collapse: collapse; width: 100%;">
+            <tr><td style="padding: 8px; font-weight: bold;">Name:</td><td style="padding: 8px;">{name}</td></tr>
+            <tr><td style="padding: 8px; font-weight: bold;">Email:</td><td style="padding: 8px;">{email}</td></tr>
+            <tr><td style="padding: 8px; font-weight: bold;">Phone:</td><td style="padding: 8px;">{phone}</td></tr>
+            <tr><td style="padding: 8px; font-weight: bold;">Subject:</td><td style="padding: 8px;">{subject}</td></tr>
+        </table>
+        <h3>Message:</h3>
+        <p>{message}</p>
+        <hr>
+        <p style="color: #666; font-size: 12px;">This email was sent from the Exceed Auto website contact form.</p>
         """
         
-        msg.attach(MIMEText(body, 'plain'))
+        params = {
+            "from": "Exceed Auto <onboarding@resend.dev>",
+            "to": [destination],
+            "subject": f"Website Inquiry: {subject}",
+            "html": html_body,
+            "reply_to": email
+        }
         
-        print(f"Attempting to connect to SMTP: {smtp_domain}:{smtp_port}")
-        server = smtplib.SMTP_SSL(smtp_domain, smtp_port, timeout=10)
-        server.login(smtp_username, smtp_password)
-        server.sendmail(smtp_username, destination, msg.as_string())
-        server.quit()
-        print("Email sent successfully")
+        result = resend.Emails.send(params)
+        print(f"Email sent successfully via Resend: {result}")
         
         return jsonify({'message': 'Email sent successfully'})
     
-    except smtplib.SMTPAuthenticationError as e:
-        print(f"SMTP Auth Error: {str(e)}")
-        return jsonify({'error': 'Email authentication failed'}), 500
-    except smtplib.SMTPException as e:
-        print(f"SMTP Error: {str(e)}")
-        return jsonify({'error': 'Email server error'}), 500
     except Exception as e:
-        print(f"Email error: {str(e)}")
+        print(f"Resend email error: {str(e)}")
         return jsonify({'error': 'Failed to send email. Please try again or contact us directly.'}), 500
 
 def init_db():
