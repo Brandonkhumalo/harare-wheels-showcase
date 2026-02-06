@@ -1,27 +1,31 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, Award, Headphones } from "lucide-react";
-import heroDealershipImg from "@/assets/images/hero-dealership.jpeg";
+import heroLandingImg from "@/assets/images/hero-landing.jpeg";
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-charcoal">
-        <div className="absolute inset-0 bg-gradient-to-br from-charcoal via-charcoal-light to-charcoal opacity-80" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(43_74%_49%/0.1),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,hsl(43_74%_49%/0.05),transparent_50%)]" />
+      <div className="absolute inset-0">
+        <img
+          src={heroLandingImg}
+          alt="Exceed Auto Dealership - Toyota Land Cruiser"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/70 to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-2xl">
           <div className="animate-fade-up">
             <p className="text-primary text-sm font-medium uppercase tracking-wider mb-4">
               Welcome to Exceed Auto
             </p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-foreground leading-tight mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight mb-6">
               Drive Your Dreams
               <span className="block text-gradient-gold">Home Today</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-xl mb-8 leading-relaxed">
+            <p className="text-lg text-gray-300 max-w-xl mb-8 leading-relaxed">
               Zimbabwe's premier destination for quality new and pre-owned vehicles. 
               Experience luxury, reliability, and exceptional service at Harare's 
               most trusted dealership.
@@ -37,7 +41,7 @@ const Hero = () => {
               </Link>
             </div>
 
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-4 gap-6">
               {[
                 { icon: Shield, label: "Quality Assured", value: "100%" },
                 { icon: Award, label: "Years Experience", value: "15+" },
@@ -45,24 +49,20 @@ const Hero = () => {
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
                   <stat.icon className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-xs text-gray-400">{stat.label}</p>
                 </div>
               ))}
-            </div>
-          </div>
-
-          <div className="relative hidden lg:block animate-scale-in">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent blur-3xl" />
-              <img
-                src={heroDealershipImg}
-                alt="Exceed Auto Dealership"
-                className="relative z-10 w-full rounded-2xl shadow-2xl"
-              />
-              <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-xl p-4 shadow-xl z-20">
-                <p className="text-3xl font-bold text-gradient-gold">500+</p>
-                <p className="text-sm text-muted-foreground">Vehicles Sold</p>
+              <div className="text-center">
+                <div className="w-8 h-8 mx-auto mb-2 flex items-center justify-center">
+                  <svg className="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-2-2.7-3H9c-1.4 0-2.7.6-3.5 1.5L4 10H2c-.6 0-1 .4-1 1v4c0 .6.4 1 1 1h1" />
+                    <circle cx="7" cy="17" r="2" />
+                    <circle cx="17" cy="17" r="2" />
+                  </svg>
+                </div>
+                <p className="text-2xl font-bold text-white">500+</p>
+                <p className="text-xs text-gray-400">Vehicles Sold</p>
               </div>
             </div>
           </div>
@@ -70,7 +70,7 @@ const Hero = () => {
       </div>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-muted-foreground rounded-full flex items-start justify-center p-2">
+        <div className="w-6 h-10 border-2 border-gray-400 rounded-full flex items-start justify-center p-2">
           <div className="w-1 h-2 bg-primary rounded-full" />
         </div>
       </div>
