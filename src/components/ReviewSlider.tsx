@@ -53,9 +53,6 @@ const ReviewSlider = () => {
                     <p className="font-semibold text-foreground">
                       {review.name}
                     </p>
-                    <p className="text-sm text-muted-foreground">
-                      {review.role}
-                    </p>
                   </div>
                 </div>
               </div>
