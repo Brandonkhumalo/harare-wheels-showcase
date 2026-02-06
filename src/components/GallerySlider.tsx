@@ -1,27 +1,27 @@
-import gallery1 from "@/assets/images/gallery-1.jpeg";
-import gallery2 from "@/assets/images/gallery-2.jpeg";
-import gallery3 from "@/assets/images/gallery-3.jpeg";
-import gallery4 from "@/assets/images/gallery-4.jpeg";
-import gallery5 from "@/assets/images/gallery-5.jpeg";
-import gallery6 from "@/assets/images/gallery-6.jpeg";
-import gallery7 from "@/assets/images/gallery-7.jpeg";
-import gallery8 from "@/assets/images/gallery-8.jpeg";
-import gallery9 from "@/assets/images/gallery-9.jpeg";
-import gallery10 from "@/assets/images/gallery-10.jpeg";
-import gallery11 from "@/assets/images/gallery-11.jpeg";
+import galleryBlackSuvs from "@/assets/images/gallery-black-suvs.jpeg";
+import galleryWhiteCars from "@/assets/images/gallery-white-cars.jpeg";
+import galleryToyotaLineup from "@/assets/images/gallery-toyota-lineup.jpeg";
+import galleryDealershipStreet from "@/assets/images/gallery-dealership-street.jpeg";
+import galleryFordRanger from "@/assets/images/gallery-ford-ranger.jpeg";
+import galleryAquaTrio from "@/assets/images/gallery-aqua-trio.jpeg";
+import galleryRangeRover from "@/assets/images/gallery-range-rover.jpeg";
+import galleryLotOverview from "@/assets/images/gallery-lot-overview.jpeg";
+import galleryToyota86 from "@/assets/images/gallery-toyota-86.jpeg";
+import galleryMercedesBack from "@/assets/images/gallery-mercedes-gle-back.jpeg";
+import galleryMercedesFront from "@/assets/images/gallery-mercedes-gle-front.jpeg";
 
 const images = [
-  { src: gallery1, alt: "Exceed Auto dealership with vehicles" },
-  { src: gallery2, alt: "Exceed Auto reception area" },
-  { src: gallery3, alt: "Exceed Auto lounge" },
-  { src: gallery4, alt: "Managing Director office" },
-  { src: gallery5, alt: "Ford Raptor at Exceed Auto" },
-  { src: gallery6, alt: "Exceed Auto storefront entrance" },
-  { src: gallery7, alt: "Vehicle lot with inventory" },
-  { src: gallery8, alt: "Exceed Auto signage" },
-  { src: gallery9, alt: "Exceed Auto wall branding" },
-  { src: gallery10, alt: "Toyota 86 at Exceed Auto" },
-  { src: gallery11, alt: "Mercedes-Benz at Exceed Auto" },
+  { src: galleryRangeRover, alt: "Range Rover at Exceed Auto" },
+  { src: galleryFordRanger, alt: "Ford Ranger Raptor at Exceed Auto" },
+  { src: galleryMercedesFront, alt: "Mercedes-Benz GLE front view" },
+  { src: galleryToyota86, alt: "Toyota 86 sports car at Exceed Auto" },
+  { src: galleryBlackSuvs, alt: "Black SUVs lineup at dealership" },
+  { src: galleryMercedesBack, alt: "Mercedes-Benz GLE rear view" },
+  { src: galleryToyotaLineup, alt: "Toyota Axio lineup" },
+  { src: galleryLotOverview, alt: "Exceed Auto full lot overview" },
+  { src: galleryAquaTrio, alt: "Toyota Aqua trio at dealership" },
+  { src: galleryWhiteCars, alt: "White cars under canopy" },
+  { src: galleryDealershipStreet, alt: "Exceed Auto street view with jacarandas" },
 ];
 
 const GallerySlider = () => {
