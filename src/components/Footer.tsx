@@ -86,6 +86,18 @@ const Footer = () => {
           <p className="text-muted-foreground text-sm">
             {new Date().getFullYear()} Exceed Auto. All rights reserved.
           </p>
+          <p className="text-muted-foreground text-sm">
+            Designed and developed by{" "}
+            <a
+              href="https://tishanyq.co.zw"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline transition-colors"
+              data-testid="link-tishany"
+            >
+              Tishany Digital
+            </a>
+          </p>
         </div>
       </div>
     </footer>
