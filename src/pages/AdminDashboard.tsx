@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, Car, Brand, getImageUrl } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, LogOut, Car as CarIcon, Image, X } from "lucide-react";
+import { Plus, Trash2, LogOut, Car as CarIcon, Image, X, Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const AdminDashboard = () => {
@@ -10,7 +10,9 @@ const AdminDashboard = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingCar, setEditingCar] = useState<Car | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [existingImages, setExistingImages] = useState<Car["images"]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -125,23 +127,7 @@ const AdminDashboard = () => {
         description: "Car added successfully",
       });
 
-      setFormData({
-        brand_id: "",
-        brand_name: "",
-        model: "",
-        year: new Date().getFullYear(),
-        price: "",
-        mileage: "",
-        fuel_type: "",
-        transmission: "",
-        body_type: "",
-        color: "",
-        engine: "",
-        description: "",
-        featured: false,
-      });
-      setSelectedImages([]);
-      setShowAddForm(false);
+      cancelForm();
       loadData();
     } catch (error) {
       toast({
@@ -170,6 +156,116 @@ const AdminDashboard = () => {
         description: "Failed to delete car",
         variant: "destructive",
       });
+    }
+  };
+
+  const startEdit = (car: Car) => {
+    setEditingCar(car);
+    setFormData({
+      brand_id: String(car.brand_id),
+      brand_name: "",
+      model: car.model,
+      year: car.year,
+      price: String(car.price),
+      mileage: car.mileage ? String(car.mileage) : "",
+      fuel_type: car.fuel_type || "",
+      transmission: car.transmission || "",
+      body_type: car.body_type || "",
+      color: car.color || "",
+      engine: car.engine || "",
+      description: car.description || "",
+      featured: car.featured,
+    });
+    setExistingImages(car.images);
+    setSelectedImages([]);
+    setUseExistingBrand(true);
+    setShowAddForm(true);
+  };
+
+  const cancelForm = () => {
+    setShowAddForm(false);
+    setEditingCar(null);
+    setExistingImages([]);
+    setSelectedImages([]);
+    setFormData({
+      brand_id: "",
+      brand_name: "",
+      model: "",
+      year: new Date().getFullYear(),
+      price: "",
+      mileage: "",
+      fuel_type: "",
+      transmission: "",
+      body_type: "",
+      color: "",
+      engine: "",
+      description: "",
+      featured: false,
+    });
+  };
+
+  const handleDeleteImage = async (imageId: number) => {
+    if (!editingCar) return;
+    try {
+      await api.deleteCarImage(editingCar.id, imageId);
+      setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
+      toast({ title: "Image removed" });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to remove image",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCar) return;
+    setIsSubmitting(true);
+
+    try {
+      const data = new FormData();
+
+      if (useExistingBrand && formData.brand_id) {
+        data.append("brand_id", formData.brand_id);
+      } else if (!useExistingBrand && formData.brand_name) {
+        data.append("brand_name", formData.brand_name);
+      }
+
+      data.append("model", formData.model);
+      data.append("year", String(formData.year));
+      data.append("price", formData.price);
+      if (formData.mileage) data.append("mileage", formData.mileage);
+      if (formData.fuel_type) data.append("fuel_type", formData.fuel_type);
+      if (formData.transmission) data.append("transmission", formData.transmission);
+      if (formData.body_type) data.append("body_type", formData.body_type);
+      if (formData.color) data.append("color", formData.color);
+      if (formData.engine) data.append("engine", formData.engine);
+      if (formData.description) data.append("description", formData.description);
+      data.append("featured", String(formData.featured));
+
+      selectedImages.forEach((image) => {
+        data.append("images", image);
+      });
+
+      await api.updateCar(editingCar.id, data);
+
+      toast({
+        title: "Success",
+        description: "Vehicle updated successfully",
+      });
+
+      cancelForm();
+      loadData();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to update vehicle",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -211,7 +307,15 @@ const AdminDashboard = () => {
             </p>
           </div>
           <button
-            onClick={() => setShowAddForm(!showAddForm)}
+            onClick={() => {
+              if (showAddForm) {
+                cancelForm();
+              } else {
+                setEditingCar(null);
+                setExistingImages([]);
+                setShowAddForm(true);
+              }
+            }}
             className="btn-gold flex items-center gap-2"
             data-testid="button-add-car"
           >
@@ -223,16 +327,18 @@ const AdminDashboard = () => {
         {showAddForm && (
           <div className="bg-card border border-border rounded-xl p-6 mb-8 animate-fade-up">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-foreground">Add New Vehicle</h2>
+              <h2 className="text-xl font-semibold text-foreground">
+                {editingCar ? "Edit Vehicle" : "Add New Vehicle"}
+              </h2>
               <button
-                onClick={() => setShowAddForm(false)}
+                onClick={cancelForm}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={editingCar ? handleEditSubmit : handleSubmit} className="space-y-6">
               <div className="flex items-center gap-4 mb-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -446,8 +552,44 @@ const AdminDashboard = () => {
                   <div className="flex items-center gap-2">
                     <Image className="w-4 h-4" />
                     Vehicle Images (max 8)
+                    {editingCar && (
+                      <span className="text-muted-foreground font-normal">
+                        — {existingImages.length} existing, {8 - existingImages.length} slots remaining
+                      </span>
+                    )}
                   </div>
                 </label>
+
+                {editingCar && existingImages.length > 0 && (
+                  <div className="mb-4">
+                    <p className="text-sm text-muted-foreground mb-2">Current images:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {existingImages.map((img) => (
+                        <div key={img.id} className="relative">
+                          <img
+                            src={getImageUrl(img.url)}
+                            alt="Existing"
+                            className="w-20 h-20 object-cover rounded-lg border border-border"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteImage(img.id)}
+                            className="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center"
+                            data-testid={`button-delete-image-${img.id}`}
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                          {img.is_primary && (
+                            <span className="absolute bottom-0 left-0 right-0 bg-primary/80 text-primary-foreground text-[10px] text-center py-0.5 rounded-b-lg">
+                              Primary
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <input
                   type="file"
                   accept="image/*"
@@ -458,23 +600,26 @@ const AdminDashboard = () => {
                 />
                 
                 {selectedImages.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {selectedImages.map((file, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt={`Preview ${index + 1}`}
-                          className="w-20 h-20 object-cover rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
+                  <div className="mt-4">
+                    <p className="text-sm text-muted-foreground mb-2">New images to upload:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedImages.map((file, index) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt={`Preview ${index + 1}`}
+                            className="w-20 h-20 object-cover rounded-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -482,7 +627,7 @@ const AdminDashboard = () => {
               <div className="flex justify-end gap-4">
                 <button
                   type="button"
-                  onClick={() => setShowAddForm(false)}
+                  onClick={cancelForm}
                   className="px-6 py-2 rounded-lg border border-border text-foreground hover:bg-secondary transition-colors"
                 >
                   Cancel
@@ -493,7 +638,9 @@ const AdminDashboard = () => {
                   className="btn-gold px-6 py-2 disabled:opacity-50"
                   data-testid="button-submit-car"
                 >
-                  {isSubmitting ? "Adding..." : "Add Vehicle"}
+                  {isSubmitting
+                    ? editingCar ? "Updating..." : "Adding..."
+                    : editingCar ? "Update Vehicle" : "Add Vehicle"}
                 </button>
               </div>
             </form>
@@ -546,13 +693,22 @@ const AdminDashboard = () => {
                       </td>
                       <td className="px-6 py-4 text-foreground">{car.body_type || "-"}</td>
                       <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={() => handleDelete(car.id)}
-                          className="p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-                          data-testid={`button-delete-car-${car.id}`}
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => startEdit(car)}
+                            className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                            data-testid={`button-edit-car-${car.id}`}
+                          >
+                            <Pencil className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(car.id)}
+                            className="p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                            data-testid={`button-delete-car-${car.id}`}
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
