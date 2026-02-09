@@ -95,7 +95,7 @@ const Footer = () => {
               className="text-primary hover:underline transition-colors"
               data-testid="link-tishany"
             >
-              Tishany Digital
+              Tishanyq Digital
             </a>
           </p>
         </div>
