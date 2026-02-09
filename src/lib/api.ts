@@ -1,4 +1,10 @@
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
+const API_ORIGIN = API_BASE.replace(/\/api\/?$/, '');
+
+export function getImageUrl(path: string): string {
+  if (path.startsWith('http')) return path;
+  return API_ORIGIN ? `${API_ORIGIN}${path}` : path;
+}
 
 export interface Car {
   id: number;
