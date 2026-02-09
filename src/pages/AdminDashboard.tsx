@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { api, Car, Brand } from "@/lib/api";
+import { api, Car, Brand, getImageUrl } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, LogOut, Car as CarIcon, Image, X } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -526,7 +526,7 @@ const AdminDashboard = () => {
                       <td className="px-6 py-4">
                         {car.images.length > 0 ? (
                           <img
-                            src={car.images[0].url}
+                            src={getImageUrl(car.images[0].url)}
                             alt={`${car.brand_name} ${car.model}`}
                             className="w-16 h-12 object-cover rounded"
                           />

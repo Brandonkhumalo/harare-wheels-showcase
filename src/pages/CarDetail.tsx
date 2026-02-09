@@ -2,7 +2,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { api, Car } from "@/lib/api";
+import { api, Car, getImageUrl } from "@/lib/api";
 import {
   ArrowLeft,
   Calendar,
@@ -112,7 +112,7 @@ const CarDetail = () => {
               <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-charcoal-light">
                 {primaryImage ? (
                   <img
-                    src={primaryImage.url}
+                    src={getImageUrl(primaryImage.url)}
                     alt={`${car.brand_name} ${car.model}`}
                     className="w-full h-full object-cover"
                   />
@@ -133,7 +133,7 @@ const CarDetail = () => {
                   {car.images.map((image) => (
                     <div key={image.id} className="aspect-[4/3] rounded-lg overflow-hidden bg-charcoal-light">
                       <img
-                        src={image.url}
+                        src={getImageUrl(image.url)}
                         alt={`${car.brand_name} ${car.model}`}
                         className="w-full h-full object-cover"
                       />
@@ -237,7 +237,7 @@ const CarDetail = () => {
                   <div className="aspect-[4/3] bg-muted">
                     {similarCar.images[0] ? (
                       <img
-                        src={similarCar.images[0].url}
+                        src={getImageUrl(similarCar.images[0].url)}
                         alt={`${similarCar.brand_name} ${similarCar.model}`}
                         className="w-full h-full object-cover"
                       />

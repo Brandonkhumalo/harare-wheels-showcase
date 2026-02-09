@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Car as CarIcon, Calendar, Gauge, Fuel, Settings2 } from "lucide-react";
-import { Car } from "@/lib/api";
+import { Car, getImageUrl } from "@/lib/api";
 
 interface CarCardProps {
   car: Car;
@@ -16,7 +16,7 @@ const CarCard = ({ car }: CarCardProps) => {
         <div className="relative h-56 overflow-hidden bg-charcoal-lighter">
           {imageUrl ? (
             <img
-              src={imageUrl}
+              src={getImageUrl(imageUrl)}
               alt={`${car.brand_name} ${car.model}`}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
