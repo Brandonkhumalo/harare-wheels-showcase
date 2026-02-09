@@ -70,7 +70,16 @@ const AdminDashboard = () => {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setSelectedImages(Array.from(e.target.files));
+      const newFiles = Array.from(e.target.files);
+      if (newFiles.length > 8) {
+        toast({
+          title: "Too many images",
+          description: "Maximum 8 images allowed per vehicle",
+          variant: "destructive",
+        });
+        return;
+      }
+      setSelectedImages(newFiles);
     }
   };
 
@@ -436,7 +445,7 @@ const AdminDashboard = () => {
                 <label className="block text-sm font-medium text-foreground mb-2">
                   <div className="flex items-center gap-2">
                     <Image className="w-4 h-4" />
-                    Vehicle Images
+                    Vehicle Images (max 8)
                   </div>
                 </label>
                 <input

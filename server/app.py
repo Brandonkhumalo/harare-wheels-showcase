@@ -29,7 +29,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URL') or os.environ.g
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uploads')
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
@@ -59,6 +59,10 @@ def token_required(f):
         
         return f(*args, **kwargs)
     return decorated
+
+@app.errorhandler(413)
+def too_large(e):
+    return jsonify({'error': 'Files too large. Maximum total upload size is 100MB.'}), 413
 
 def cleanup_empty_brands():
     empty_brands = Brand.query.filter(~Brand.cars.any()).all()
@@ -206,8 +210,10 @@ def create_car():
     db.session.commit()
     
     files = request.files.getlist('images')
+    if len(files) > 8:
+        return jsonify({'error': 'Maximum 8 images allowed per vehicle'}), 400
     for i, file in enumerate(files):
-        if file and allowed_file(file.filename):
+        if file and file.filename and allowed_file(file.filename):
             filename = secure_filename(f"{car.id}_{datetime.now().timestamp()}_{file.filename}")
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             
@@ -265,9 +271,12 @@ def update_car(car_id):
     if request.form.get('featured'):
         car.featured = request.form.get('featured', 'false').lower() == 'true'
     
+    existing_count = CarImage.query.filter_by(car_id=car.id).count()
     files = request.files.getlist('images')
+    if existing_count + len(files) > 8:
+        return jsonify({'error': f'Maximum 8 images allowed. This vehicle already has {existing_count} images.'}), 400
     for i, file in enumerate(files):
-        if file and allowed_file(file.filename):
+        if file and file.filename and allowed_file(file.filename):
             filename = secure_filename(f"{car.id}_{datetime.now().timestamp()}_{file.filename}")
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             
