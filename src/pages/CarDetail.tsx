@@ -186,7 +186,7 @@ const CarDetail = () => {
                   Contact Us
                 </Link>
                 <a
-                  href={`https://wa.me/263771234567?text=Hi, I'm interested in the ${car.year} ${car.brand_name} ${car.model} listed at $${car.price.toLocaleString()}`}
+                  href={`https://wa.me/263778241261?text=Hi, I'm interested in the ${car.year} ${car.brand_name} ${car.model} listed at $${car.price.toLocaleString()}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-outline-gold flex-1 flex items-center justify-center gap-2"
