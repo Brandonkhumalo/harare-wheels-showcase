@@ -378,7 +378,7 @@ def send_contact_email():
         """
         
         params = {
-            "from": "Exceed Auto <onboarding@resend.dev>",
+            "from": "Exceed Auto <noreply@exceed-auto.co.zw>",
             "to": [destination],
             "subject": f"Website Inquiry: {subject}",
             "html": html_body,
