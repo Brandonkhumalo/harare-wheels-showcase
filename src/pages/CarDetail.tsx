@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { api, Car, getImageUrl } from "@/lib/api";
+import { useState, useRef, useEffect } from "react";
 import {
   ArrowLeft,
   Calendar,
@@ -13,13 +14,31 @@ import {
   Phone,
   MessageCircle,
   ChevronRight,
+  ChevronDown,
   Loader2,
   Car as CarIcon,
 } from "lucide-react";
 
+const whatsappNumbers = [
+  { phone: "263778241261", display: "+263 77 824 1261" },
+  { phone: "263772112881", display: "+263 77 211 2881" },
+];
+
 const CarDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [showWhatsAppOptions, setShowWhatsAppOptions] = useState(false);
+  const waRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (waRef.current && !waRef.current.contains(e.target as Node)) {
+        setShowWhatsAppOptions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const { data: car, isLoading, error } = useQuery<Car>({
     queryKey: ["/api/cars", id],
@@ -185,16 +204,34 @@ const CarDetail = () => {
                   <Phone className="w-5 h-5" />
                   Contact Us
                 </Link>
-                <a
-                  href={`https://wa.me/263778241261?text=Hi, I'm interested in the ${car.year} ${car.brand_name} ${car.model} listed at $${car.price.toLocaleString()}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-outline-gold flex-1 flex items-center justify-center gap-2"
-                  data-testid="button-whatsapp"
-                >
-                  <MessageCircle className="w-5 h-5" />
-                  WhatsApp
-                </a>
+                <div ref={waRef} className="relative flex-1">
+                  <button
+                    onClick={() => setShowWhatsAppOptions(!showWhatsAppOptions)}
+                    className="btn-outline-gold w-full flex items-center justify-center gap-2"
+                    data-testid="button-whatsapp"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    WhatsApp
+                    <ChevronDown className={`w-4 h-4 transition-transform ${showWhatsAppOptions ? "rotate-180" : ""}`} />
+                  </button>
+                  {showWhatsAppOptions && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-2xl p-2 z-50" data-testid="whatsapp-car-options">
+                      {whatsappNumbers.map((n) => (
+                        <a
+                          key={n.phone}
+                          href={`https://wa.me/${n.phone}?text=Hi, I'm interested in the ${car.year} ${car.brand_name} ${car.model} listed at $${car.price.toLocaleString()}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#25D366]/10 transition-colors"
+                          data-testid={`whatsapp-car-option-${n.phone}`}
+                        >
+                          <MessageCircle className="w-5 h-5 text-[#25D366] fill-[#25D366] shrink-0" />
+                          <span className="text-sm text-foreground font-medium">{n.display}</span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
